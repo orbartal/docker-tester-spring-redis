@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+
+    #redis: Third party open source redis db
+    redis:
+        image: redis:latest
+        ports:
+            - ${DEMO_REDIS_PORT}:6379
+        volumes:
+            - redis-data:/data
+        networks:
+            - docker-tester-spring-redis    
+
+    #redisCommander: Third party open source gui for redis db
+    redis-commander:
+        image: rediscommander/redis-commander:latest
+        environment:
+            - REDIS_HOSTS=local:redis:${DEMO_REDIS_PORT}
+            - HTTP_USER=${REDIS_COMMANDER_USER_NAME}
+            - HTTP_PASSWORD=${REDIS_COMMANDER_USER_PASS}
+        ports:
+            - ${REDIS_COMMANDER_PORT}:8081
+        depends_on:
+            - redis
+        networks:
+            - docker-tester-spring-redis    
+
+    demospringredisbackend:
+        image: orbartal/demo-redis-spring-backend:latest
+        hostname: demospringredis
+        container_name: demospringredisbackend
+        depends_on:
+            - redis
+        ports:
+            - ${DEMO_BACKEND_PORT}:8080
+        environment:
+        #Redis
+            - SPRING_PROFILES_ACTIVE=comp
+            - SPRING_REDIS_HOST=redis
+            - SPRING_REDIS_PORT=${DEMO_REDIS_PORT}
+        networks:
+            - docker-tester-spring-redis
+
+    demospringredistester:
+        image: orbartal/demo-redis-spring-tester:latest
+        hostname: demospringredistester
+        container_name: demospringredistester
+        depends_on:
+            - demospringredisbackend
+        ports:
+            - ${DEMO_TESTER_PORT}:8090
+        networks:
+            - docker-tester-spring-redis
+        environment:
+            - demo.backend.url=http://demospringredisbackend:${DEMO_BACKEND_PORT}
+
+networks:
+    docker-tester-spring-redis:
+
+volumes:
+  redis-data:
