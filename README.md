@@ -15,7 +15,7 @@ There are currently 4 mods to testing the backend:
 1. Running integration test without running the real backend server. Using spring profile test.
 2. Running the backend server as local app togther with a local redis db. Using spring profile dev.
 3. Running the backend server as a docker directly. With embeded (test) or external DB (dev).
-4. Running the backend server as a docker using compose. It uses the compose postgresql docker.
+4. Running the backend server as a docker using compose. It uses the compose redis docker.
 
 ### Instructions on how to build/run the backend locally 
 
@@ -28,7 +28,7 @@ Install java 17 from [oracle](https://www.oracle.com/java/technologies/downloads
 
 Install maven, on any OS, using [baeldung](https://www.baeldung.com/install-maven-on-windows-linux-mac) guide. 
 
-In the terminal (or cmd) cd into dir "..\docker-tester-spring-sql\backend" and run:
+In the terminal (or cmd) cd into dir "..\docker-tester-spring-redis\backend" and run:
 
 mvn clean install
 
